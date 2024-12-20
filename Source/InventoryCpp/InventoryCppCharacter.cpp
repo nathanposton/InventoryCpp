@@ -84,6 +84,9 @@ void AInventoryCppCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AInventoryCppCharacter::BeginInteract);
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Completed, this, &AInventoryCppCharacter::EndInteract);
+
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AInventoryCppCharacter::Move);
 
@@ -197,7 +200,7 @@ void AInventoryCppCharacter::FoundInteractable(AActor* NewInteractable)
 		EndInteract();
 	}
 
-	if (InteractionData.CurrentInteractable())
+	if (InteractionData.CurrentInteractable)
 	{
 		TargetInteractable = InteractionData.CurrentInteractable;
 		TargetInteractable->EndFocus();
