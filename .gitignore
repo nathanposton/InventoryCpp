@@ -1,0 +1,28 @@
+# Unreal Engine generated files
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+
+# User-specific files
+*.sln
+*.suo
+*.user
+*.vspx
+*.vxcproj
+*.vxcproj.filters
+*.opensdf
+*.opendb
+
+# Plugins
+Plugins/*/Binaries/
+Plugins/*/Intermediate/
+Plugins/*/Saved/
+Plugins/*/DerivedDataCache/
+
+# Other files
+*.uprojectlocal
+*.uasset
+*.umap
+*.udata
+

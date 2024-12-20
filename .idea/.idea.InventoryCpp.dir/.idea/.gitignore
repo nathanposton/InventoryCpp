@@ -1,0 +1,84 @@
+#################################
+# Unreal Engine Generated Files #
+#################################
+/[Bb]uild
+/[Bb]uilds
+/Binaries
+/DerivedDataCache
+/Intermediate
+/Saved
+
+#################################
+# Visual Studio Generated Files #
+#################################
+# Cache Directory
+.vs
+# User Specific Files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+# CPP Cache Files
+*.VC.db
+*.opendb
+*.opensdf
+*.sdf
+# Solution Files
+*.sln
+# VSCode Cache Directory
+.vscode
+# VSCode History Files
+**/.history
+
+###################################
+# JetBrains Rider Generated Files #
+###################################
+# Cache Directory
+.idea
+
+# Solution and Project Files
+*.csproj
+*.sln.DotSettings
+*.sln.DotSettings.user
+
+#################################
+# Miscellaneous Generated Files #
+#################################
+
+# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/modules.xml
+/.idea.InventoryCpp.iml
+/projectSettingsUpdater.xml
+/contentModel.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+
+# Unreal Engine generated files
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+
+# User-specific files
+*.vspx
+*.vxcproj
+*.vxcproj.filters
+
+# Plugins
+Plugins/*/Binaries/
+Plugins/*/Intermediate/
+Plugins/*/Saved/
+Plugins/*/DerivedDataCache/
+
+# Other files
+*.uprojectlocal
+*.uasset
+*.umap
+*.udata
