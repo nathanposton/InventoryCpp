@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InventoryCpp/InventoryCppCharacter.h"
 #include "UObject/Interface.h"
 #include "InteractionInterface.generated.h"
+
+// Forward declaration
+class AInventoryCppCharacter;
 
 UENUM()
 enum class EInteractableType : uint8

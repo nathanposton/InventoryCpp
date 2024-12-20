@@ -54,7 +54,7 @@ void AInterfaceTestActor::EndInteract()
 	UE_LOG(LogTemp, Warning, TEXT("Called EndInteract override on interface test actor"));
 }
 
-void AInterfaceTestActor::Interact()
+void AInterfaceTestActor::Interact(AInventoryCppCharacter* PlayerCharacter)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Called Interact override on interface test actor"));
 }
