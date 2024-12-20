@@ -174,9 +174,10 @@ void AInventoryCppCharacter::PerformInteractionCheck()
 		{
 			if (TraceHit.GetActor()->GetClass()->ImplementsInterface(UInteractionInterface::StaticClass()))
 			{
-				const float Distance = (TraceStart - TraceHit.ImpactPoint).Size();
+				// distance check is redundant. Distance exceeding trace length is not possible.
+				// const float Distance = (TraceStart - TraceHit.ImpactPoint).Size();
 
-				if (TraceHit.GetActor() != InteractionData.CurrentInteractable && Distance <= InteractionCheckDistance)
+				if (TraceHit.GetActor() != InteractionData.CurrentInteractable)// && Distance <= InteractionCheckDistance)
 				{
 					FoundInteractable(TraceHit.GetActor());
 					return;
@@ -273,6 +274,6 @@ void AInventoryCppCharacter::Interact()
 
 	if (IsValid(TargetInteractable.GetObject()))
 	{
-		TargetInteractable->Interact();
+		TargetInteractable->Interact(this);
 	}
 }

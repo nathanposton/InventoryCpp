@@ -23,28 +23,28 @@ public:
 	// UPROPERTY()
 	// UInventoryComponent* OwningInventory;
 	
-	UPROPERTY(VisibleAnywhere, Category = "Item Data", meta = (UIMin = 1, UIMax = 100))
+	UPROPERTY(VisibleAnywhere, Category = "Item")
 	int32 Quantity;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Item")
 	FName ID;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Item")
 	EItemQuality Quality;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Item")
 	EItemType Type;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Item")
 	FItemStatistics Statistics;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Item")
 	FItemTextData TextData;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Item")
 	FItemNumericData NumericData;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Item")
 	FItemAssetData AssetData;
 
 	//=================================================================================================
@@ -72,6 +72,6 @@ public:
 protected:
 	bool operator==(const FName& OtherID) const
 	{
-		return ID == OtherID;
+		return this->ID == OtherID;
 	};
 };

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InventoryCpp/InventoryCppCharacter.h"
 #include "UObject/Interface.h"
 #include "InteractionInterface.generated.h"
 
@@ -64,11 +65,11 @@ class INVENTORYCPP_API IInteractionInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void BeginFocus() = 0;
-	virtual void EndFocus() = 0;
-	virtual void BeginInteract() = 0;
-	virtual void EndInteract() = 0;
-	virtual void Interact() = 0;
+	virtual void BeginFocus();
+	virtual void EndFocus();
+	virtual void BeginInteract();
+	virtual void EndInteract();
+	virtual void Interact(AInventoryCppCharacter* PlayerCharacter);
 
 	FInteractableData InteractableData;
 };
