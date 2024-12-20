@@ -31,4 +31,5 @@ protected:
 	virtual void BeginInteract() override;
 	virtual void EndInteract() override;
 	virtual void Interact(AInventoryCppCharacter* PlayerCharacter) override;
+	//FIXME: delete me
 };
