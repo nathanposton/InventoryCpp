@@ -36,7 +36,7 @@ void UInteractionWidget::UpdateWidget(const FInteractableData* InteractableData)
 		else
 		{
 			QuantityText->SetText(
-				FText::Format(NSLOCTEXT("InteractionWidget", "QuantityText", "x{0}"), InteractableData->Quantity));
+				FText::Format(NSLOCTEXT("InteractionWidget", "QuantityText", " x{0}"), InteractableData->Quantity));
 			QuantityText->SetVisibility(ESlateVisibility::Visible);
 		}
 		break;
@@ -51,6 +51,9 @@ void UInteractionWidget::UpdateWidget(const FInteractableData* InteractableData)
 		break;
 	default: ;
 	}
+
+	ActionText->SetText(InteractableData->Action);
+	NameText->SetText(InteractableData->Name);
 }
 
 float UInteractionWidget::UpdateInteractionProgress()
