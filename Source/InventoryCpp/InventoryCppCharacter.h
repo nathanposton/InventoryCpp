@@ -8,6 +8,8 @@
 #include "Logging/LogMacros.h"
 #include "InventoryCppCharacter.generated.h"
 
+class AInventoryHUD;
+
 USTRUCT()
 struct FInteractionData
 {
@@ -60,6 +62,9 @@ protected:
 	// =================================================================================================
 	// PROPERTIES & VARIABLES
 	// =================================================================================================
+	UPROPERTY()
+	AInventoryHUD* HUD;
+	
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;

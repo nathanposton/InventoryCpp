@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "UI/InventoryHUD.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -151,6 +152,8 @@ void AInventoryCppCharacter::Tick(float DeltaSeconds)
 void AInventoryCppCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	HUD = Cast<AInventoryHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 }
 
 void AInventoryCppCharacter::PerformInteractionCheck()
@@ -210,6 +213,8 @@ void AInventoryCppCharacter::FoundInteractable(AActor* NewInteractable)
 	InteractionData.CurrentInteractable = NewInteractable;
 	TargetInteractable = NewInteractable;
 
+	HUD->UpdateInteractionWidget(&TargetInteractable->InteractableData);
+
 	TargetInteractable->BeginFocus();
 }
 
@@ -227,7 +232,7 @@ void AInventoryCppCharacter::NoInteractableFound()
 			TargetInteractable->EndFocus();
 		}
 
-		// hide interaction widget on HUD
+		HUD->HideInteractionWidget();
 
 		InteractionData.CurrentInteractable = nullptr;
 		TargetInteractable = nullptr;
