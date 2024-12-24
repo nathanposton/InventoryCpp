@@ -118,6 +118,11 @@ protected:
 		meta = (AllowPrivateAccess = "true"))
 	UInputAction* InteractAction;
 
+	/** Menu Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input,
+		meta = (AllowPrivateAccess = "true"))
+	UInputAction* MenuAction;
+
 
 	UPROPERTY(VisibleAnywhere, Category = "Character | Interaction")
 	TScriptInterface<IInteractionInterface> TargetInteractable;
@@ -151,9 +156,10 @@ protected:
 
 	void Interact();
 
+	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
-	virtual void BeginPlay() override;
+	void ToggleMenu();
 
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);

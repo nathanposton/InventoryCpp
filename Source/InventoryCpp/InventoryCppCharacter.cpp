@@ -92,8 +92,12 @@ void AInventoryCppCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
+		// Interacting (with items, etc.)
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AInventoryCppCharacter::BeginInteract);
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Completed, this, &AInventoryCppCharacter::EndInteract);
+
+		// Menu
+		EnhancedInputComponent->BindAction(MenuAction, ETriggerEvent::Started, this, &AInventoryCppCharacter::ToggleMenu);
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AInventoryCppCharacter::Move);
@@ -153,6 +157,15 @@ void AInventoryCppCharacter::Tick(float DeltaSeconds)
 	if (GetWorld()->TimeSince(InteractionData.LastInteractionCheckTime) > InteractionCheckFrequency)
 	{
 		PerformInteractionCheck();
+	}
+}
+
+void AInventoryCppCharacter::ToggleMenu()
+{
+	UE_LOG(LogTemp, Warning, TEXT("In ToggleMenu()"));
+	if (HUD)
+	{
+		HUD->ToggleMenu();
 	}
 }
 
