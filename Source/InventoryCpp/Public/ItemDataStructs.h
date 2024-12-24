@@ -6,6 +6,7 @@
 #include "Engine/DataTable.h"
 #include "ItemDataStructs.generated.h" // Necessary if generated from UE5 Editor?
 
+
 UENUM()
 enum class EItemQuality : uint8
 {
@@ -35,6 +36,15 @@ struct FItemStatistics
 {
 	GENERATED_BODY()
 
+	FItemStatistics()
+	{
+		Damage = 0.0f;
+		Armor = 0.0f;
+		Durability = 0.0f;
+		Weight = 0.0f;
+		Value = 0.0f;
+	}
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Damage;
 
@@ -49,132 +59,6 @@ struct FItemStatistics
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Value;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Range;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float AttackSpeed;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float CritChance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float CritMultiplier;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MagicDamage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MagicResistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Health;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Mana;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Stamina;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Strength;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Dexterity;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Intelligence;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Wisdom;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Charisma;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Luck;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Perception;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Stealth;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Speed;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float JumpHeight;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Resistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Accuracy;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Evasion;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MagicFind;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float GoldFind;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float ExperienceGain;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float HealthRegen;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float ManaRegen;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float StaminaRegen;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float PoisonResistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float FireResistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float IceResistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float LightningResistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float EarthResistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float WindResistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float WaterResistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float LightResistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float DarkResistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float PoisonDamage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float FireDamage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float IceDamage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float LightningDamage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float EarthDamage;
 };
 
 USTRUCT(BlueprintType)
@@ -200,12 +84,16 @@ struct FItemNumericData
 {
 	GENERATED_BODY()
 
+	FItemNumericData() : Weight(0.0f), MaxStackSize(1), bIsStackable(false)
+	{
+	}
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Weight;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 MaxStackSize;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsStackable;
 };
@@ -214,6 +102,12 @@ USTRUCT(BlueprintType)
 struct FItemAssetData
 {
 	GENERATED_BODY()
+
+	FItemAssetData()
+	{
+		Icon = nullptr;
+		Mesh = nullptr;
+	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* Icon;
@@ -227,9 +121,8 @@ struct FItemData : public FTableRowBase
 {
 	GENERATED_BODY()
 
-	FItemData()
+	FItemData() : ID(FName(*FGuid::NewGuid().ToString())), Quality(EItemQuality::Common), Type(EItemType::Mundane)
 	{
-		ID = FName(*FGuid::NewGuid().ToString());
 	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
@@ -240,7 +133,7 @@ struct FItemData : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	EItemType Type;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	FItemStatistics Statistics;
 
@@ -253,13 +146,3 @@ struct FItemData : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	FItemAssetData AssetData;
 };
-
-// /**
-//  * 
-//  */
-// class INVENTORYCPP_API ItemDataStructs
-// {
-// public:
-// 	ItemDataStructs();
-// 	~ItemDataStructs();
-// };

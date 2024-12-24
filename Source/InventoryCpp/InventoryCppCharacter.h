@@ -16,11 +16,11 @@ struct FInteractionData
 {
 	GENERATED_BODY()
 
-	FInteractionData() : CurrentInteractable(nullptr), LastInteractionCheckTime(0.0f)
+	FInteractionData() : CurrentInteractable(nullptr),
+	                     LastInteractionCheckTime(0.0f)
 	{
-		
 	};
-	
+
 	UPROPERTY()
 	AActor* CurrentInteractable;
 
@@ -45,21 +45,34 @@ public:
 	//=================================================================================================
 	// PROPERTIES & VARIABLES
 	//=================================================================================================
-	
+
 
 	//=================================================================================================
 	// FUNCTIONS
 	//=================================================================================================
 	AInventoryCppCharacter();
-	
+
 	/** Returns CameraBoom subobject **/
-	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+	FORCEINLINE class USpringArmComponent* GetCameraBoom() const
+	{
+		return CameraBoom;
+	}
+
 	/** Returns FollowCamera subobject **/
-	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	FORCEINLINE class UCameraComponent* GetFollowCamera() const
+	{
+		return FollowCamera;
+	}
 
-	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TimerHandle_Interaction); }
+	FORCEINLINE bool IsInteracting() const
+	{
+		return GetWorldTimerManager().IsTimerActive(TimerHandle_Interaction);
+	}
 
-	FORCEINLINE UInventoryComponent* GetInventory() const { return PlayerInventory; }
+	FORCEINLINE UInventoryComponent* GetInventory() const
+	{
+		return PlayerInventory;
+	}
 
 	void UpdateInteractionWidget() const;
 
@@ -69,33 +82,40 @@ protected:
 	// =================================================================================================
 	UPROPERTY()
 	AInventoryHUD* HUD;
-	
+
 	/** Camera boom positioning the camera behind the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera,
+		meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;
 
 	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera,
+		meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
-	
+
 	/** MappingContext */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input,
+		meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
 
 	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input,
+		meta = (AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
 
 	/** Move Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input,
+		meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
 	/** Look Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input,
+		meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
 	/** Interact Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input,
+		meta = (AllowPrivateAccess = "true"))
 	UInputAction* InteractAction;
 
 
@@ -113,7 +133,7 @@ protected:
 
 	UPROPERTY()
 	FTimerHandle TimerHandle_Interaction;
-	
+
 	UPROPERTY()
 	FInteractionData InteractionData;
 	// =================================================================================================
@@ -134,7 +154,7 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 	virtual void BeginPlay() override;
-	
+
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
@@ -143,6 +163,6 @@ protected:
 
 	virtual void NotifyControllerChanged() override;
 
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(
+		class UInputComponent* PlayerInputComponent) override;
 };
-

@@ -101,7 +101,7 @@ void APickup::TakePickup(const AInventoryCppCharacter* Taker)
 
 				UE_LOG(LogTemp, Warning, TEXT("TakePickup() AddResult: %s"), *AddResult.ResultMessage.ToString());
 				
-				switch (AddResult)
+				switch (AddResult.OperationResult)
 				{
 					case EItemAddResult::IAR_AllItemAdded:
                         Destroy();
@@ -112,7 +112,8 @@ void APickup::TakePickup(const AInventoryCppCharacter* Taker)
                         break;
 					case EItemAddResult::IAR_NoItemsAdded:
                         break;
-				default: ;
+				default:
+					break;
 				}
 			
 			}
