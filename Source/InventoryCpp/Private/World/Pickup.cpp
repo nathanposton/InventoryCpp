@@ -3,6 +3,7 @@
 
 #include "World/Pickup.h"
 
+#include "Components/InventoryComponent.h"
 #include "Items/ItemBase.h"
 
 // Sets default values
@@ -94,13 +95,36 @@ void APickup::TakePickup(const AInventoryCppCharacter* Taker)
 	{
 		if (ItemReference)
 		{
-			// if (UInventoryComponent* Inventory = Taker->GetInventory())
-			// {
-				// try to add item to player inventory
-				// based on result of the add operation
-				// adjust or desroy the pickup
-			// }
+			if (UInventoryComponent* PlayerInventory = Taker->GetInventory())
+			{
+				const FItemAddResult AddResult = PlayerInventory->HandleAddItem(ItemReference);
+
+				UE_LOG(LogTemp, Warning, TEXT("TakePickup() AddResult: %s"), *AddResult.ResultMessage.ToString());
+				
+				switch (AddResult)
+				{
+					case EItemAddResult::IAR_AllItemAdded:
+                        Destroy();
+                        break;
+					case EItemAddResult::IAR_PartialAmountItemAdded:
+						UpdateInteractableData();
+						Taker->UpdateInteractionWidget();
+                        break;
+					case EItemAddResult::IAR_NoItemsAdded:
+                        break;
+				default: ;
+				}
+			
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("TakePickup() PlayerInventory component is null."));
+			}
 		}
+		else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("TakePickup() ItemReference is null."));
+        }
 	}
 }
 

@@ -8,6 +8,7 @@
 #include "Logging/LogMacros.h"
 #include "InventoryCppCharacter.generated.h"
 
+class UInventoryComponent;
 class AInventoryHUD;
 
 USTRUCT()
@@ -58,6 +59,10 @@ public:
 
 	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TimerHandle_Interaction); }
 
+	FORCEINLINE UInventoryComponent* GetInventory() const { return PlayerInventory; }
+
+	void UpdateInteractionWidget() const;
+
 protected:
 	// =================================================================================================
 	// PROPERTIES & VARIABLES
@@ -96,6 +101,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Character | Interaction")
 	TScriptInterface<IInteractionInterface> TargetInteractable;
+
+	UPROPERTY(VisibleAnywhere, Category = "Character | Inventory")
+	UInventoryComponent* PlayerInventory;
 
 	UPROPERTY()
 	float InteractionCheckFrequency;

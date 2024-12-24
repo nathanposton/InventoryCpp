@@ -8,6 +8,7 @@
 #include "InventoryCpp/InventoryCppCharacter.h"
 #include "ItemBase.generated.h"
 
+class UInventoryComponent;
 /**
  * 
  */
@@ -20,8 +21,8 @@ public:
 	//=================================================================================================
 	// PROPERTIES & VARIABLES
 	//=================================================================================================
-	// UPROPERTY()
-	// UInventoryComponent* OwningInventory;
+	UPROPERTY()
+	UInventoryComponent* OwningInventory;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Item")
 	int32 Quantity;
@@ -47,10 +48,18 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Item")
 	FItemAssetData AssetData;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Item")
+	bool bIsCopy;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Item")
+	bool bIsPickup;
+
 	//=================================================================================================
 	// FUNCTIONS
 	//=================================================================================================
 	UItemBase();
+
+	void ResetItemFlags();
 
 	UItemBase* CreateItemCopy() const;
 
@@ -70,6 +79,13 @@ public:
 	virtual void Use(AInventoryCppCharacter* Character);
 
 protected:
+	//=================================================================================================
+	// PROPERTIES & VARIABLES
+	//=================================================================================================
+	
+	// ========================================================================
+	// FUNCTIONS
+	// ========================================================================
 	bool operator==(const FName& OtherID) const
 	{
 		return this->ID == OtherID;
