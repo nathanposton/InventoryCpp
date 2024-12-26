@@ -49,13 +49,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category="Inventory Slot")
 	UItemBase* ItemReference;
 
-	UPROPERTY(VisibleAnywhere, Category="Inventory Slot")
+	UPROPERTY(VisibleAnywhere, Category="Inventory Slot", meta=(BindWidget))
 	UBorder* ItemBorder;
 
-	UPROPERTY(VisibleAnywhere, Category="Inventory Slot")
+	UPROPERTY(VisibleAnywhere, Category="Inventory Slot", meta=(BindWidget))
 	UImage* ItemIcon;
 
-	UPROPERTY(VisibleAnywhere, Category="Inventory Slot")
+	UPROPERTY(VisibleAnywhere, Category="Inventory Slot", meta=(BindWidget))
 	UTextBlock* ItemQuantity;
 
 	// =================================================================================================

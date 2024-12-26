@@ -48,7 +48,7 @@ UItemBase* UInventoryComponent::FindNextPartialStack(UItemBase* ItemIn) const
 		FindByPredicate(
 			[ItemIn](const UItemBase* Item)
 			{
-				return Item->ID == ItemIn->ID && !Item->isFullItemStack();
+				return Item->ID == ItemIn->ID && !Item->IsFullItemStack();
 			}))
 	{
 		return *Result;

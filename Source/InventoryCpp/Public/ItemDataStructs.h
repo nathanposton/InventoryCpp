@@ -30,19 +30,13 @@ enum class EItemType : uint8
 };
 
 // struct that allows blueprint
-// solve error: /Users/nposton/Documents/Unreal Projects/InventoryCpp/Source/InventoryCpp/Public/ItemDataStructs.h(36) : Error: Cannot expose property to blueprints in a struct that is not a BlueprintType. Struct: FItemStatistics Property: Damage
 USTRUCT(BlueprintType)
 struct FItemStatistics
 {
 	GENERATED_BODY()
 
-	FItemStatistics()
+	FItemStatistics() : Damage(0.0f), Armor(0.0f), Durability(0.0f), Value(0.0f)
 	{
-		Damage = 0.0f;
-		Armor = 0.0f;
-		Durability = 0.0f;
-		Weight = 0.0f;
-		Value = 0.0f;
 	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -53,9 +47,6 @@ struct FItemStatistics
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Durability;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Weight;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Value;

@@ -70,7 +70,7 @@ public:
 	FORCEINLINE float GetItemSingleWeight() const { return NumericData.Weight; }
 
 	UFUNCTION(Category = "Item")
-	FORCEINLINE bool isFullItemStack() const { return Quantity >= NumericData.MaxStackSize; }
+	FORCEINLINE bool IsFullItemStack() const { return Quantity >= NumericData.MaxStackSize; }
 
 	UFUNCTION(Category = "Item")
 	void SetQuantity(const int32 NewQuantity);

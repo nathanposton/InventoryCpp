@@ -12,7 +12,7 @@ void UInventoryTooltip::NativeConstruct()
 
 	const UItemBase* ItemBeingHovered = InventorySlotBeingHovered->
 		GetItemReference();
-
+	
 	// initialize the tooltip with the item data
 	ItemName->SetText(ItemBeingHovered->TextData.Name);
 	DamageValue->SetText(FText::AsNumber(ItemBeingHovered->Statistics.Damage));

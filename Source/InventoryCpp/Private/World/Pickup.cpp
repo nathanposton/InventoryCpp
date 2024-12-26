@@ -11,7 +11,8 @@ APickup::APickup()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PickupMesh"));
+	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>(
+		TEXT("PickupMesh"));
 	SetRootComponent(PickupMesh);
 }
 
@@ -22,11 +23,13 @@ void APickup::BeginPlay()
 	InitializePickup(UItemBase::StaticClass(), ItemQuantity);
 }
 
-void APickup::InitializePickup(const TSubclassOf<UItemBase> BaseClass, const int32 InQuantity)
+void APickup::InitializePickup(const TSubclassOf<UItemBase> BaseClass,
+                               const int32 InQuantity)
 {
 	if (ItemDataTable && !DesiredItemID.IsNone())
 	{
-		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString());
+		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(
+			DesiredItemID, DesiredItemID.ToString());
 
 		ItemReference = NewObject<UItemBase>(this, BaseClass);
 
@@ -36,8 +39,11 @@ void APickup::InitializePickup(const TSubclassOf<UItemBase> BaseClass, const int
 		ItemReference->NumericData = ItemData->NumericData;
 		ItemReference->TextData = ItemData->TextData;
 		ItemReference->AssetData = ItemData->AssetData;
+		ItemReference->Statistics = ItemData->Statistics;
 
-		InQuantity <= 0 ? ItemReference->SetQuantity(1) : ItemReference->SetQuantity(InQuantity);
+		InQuantity <= 0
+			? ItemReference->SetQuantity(1)
+			: ItemReference->SetQuantity(InQuantity);
 
 		PickupMesh->SetStaticMesh(ItemData->AssetData.Mesh);
 
@@ -48,12 +54,19 @@ void APickup::InitializePickup(const TSubclassOf<UItemBase> BaseClass, const int
 void APickup::InitializeDrop(UItemBase* ItemToDrop, const int32 InQuantity)
 {
 	ItemReference = ItemToDrop;
-	InQuantity <= 0 ? ItemReference->SetQuantity(1) : ItemReference->SetQuantity(InQuantity);
+	InQuantity <= 0
+		? ItemReference->SetQuantity(1)
+		: ItemReference->SetQuantity(InQuantity);
 	// redundant?
 	ItemReference->NumericData.Weight = ItemToDrop->GetItemSingleWeight();
+	ItemReference->Statistics = ItemToDrop->Statistics;
 	PickupMesh->SetStaticMesh(ItemToDrop->AssetData.Mesh);
 
 	UpdateInteractableData();
+	// log the numeric data weight at this point
+	UE_LOG(LogTemp, Warning,
+	       TEXT("InitializeDrop() ItemReference->NumericData.Weight: %f"),
+	       ItemReference->NumericData.Weight);
 }
 
 void APickup::UpdateInteractableData()
@@ -97,54 +110,68 @@ void APickup::TakePickup(const AInventoryCppCharacter* Taker)
 		{
 			if (UInventoryComponent* PlayerInventory = Taker->GetInventory())
 			{
-				const FItemAddResult AddResult = PlayerInventory->HandleAddItem(ItemReference);
+				const FItemAddResult AddResult = PlayerInventory->HandleAddItem(
+					ItemReference);
 
-				UE_LOG(LogTemp, Warning, TEXT("TakePickup() AddResult: %s"), *AddResult.ResultMessage.ToString());
-				
+				UE_LOG(LogTemp, Warning, TEXT("TakePickup() AddResult: %s"),
+				       *AddResult.ResultMessage.ToString());
+				// log out the numeric data
+				UE_LOG(LogTemp, Warning,
+				       TEXT("TakePickup() ItemReference->NumericData.Weight: %f"
+				       ), ItemReference->NumericData.Weight);
+				// log out the statistic data
+				UE_LOG(LogTemp, Warning,
+				       TEXT("TakePickup() ItemReference->Statistics.Damage: %f"
+				       ), ItemReference->Statistics.Damage);
+
 				switch (AddResult.OperationResult)
 				{
-					case EItemAddResult::IAR_AllItemAdded:
-                        Destroy();
-                        break;
-					case EItemAddResult::IAR_PartialAmountItemAdded:
-						UpdateInteractableData();
-						Taker->UpdateInteractionWidget();
-                        break;
-					case EItemAddResult::IAR_NoItemsAdded:
-                        break;
+				case EItemAddResult::IAR_AllItemAdded:
+					Destroy();
+					break;
+				case EItemAddResult::IAR_PartialAmountItemAdded:
+					UpdateInteractableData();
+					Taker->UpdateInteractionWidget();
+					break;
+				case EItemAddResult::IAR_NoItemsAdded:
+					break;
 				default:
 					break;
 				}
-			
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("TakePickup() PlayerInventory component is null."));
+				UE_LOG(LogTemp, Warning,
+				       TEXT("TakePickup() PlayerInventory component is null."));
 			}
 		}
 		else
-        {
-            UE_LOG(LogTemp, Warning, TEXT("TakePickup() ItemReference is null."));
-        }
+		{
+			UE_LOG(LogTemp, Warning,
+			       TEXT("TakePickup() ItemReference is null."));
+		}
 	}
 }
 
-void APickup::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+void APickup::PostEditChangeProperty(
+	FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
-	const FName ChangedPropertyName = PropertyChangedEvent.Property ? PropertyChangedEvent.Property->GetFName() : NAME_None;
+	const FName ChangedPropertyName = PropertyChangedEvent.Property
+		                                  ? PropertyChangedEvent.Property->
+		                                  GetFName()
+		                                  : NAME_None;
 
 	if (ChangedPropertyName == GET_MEMBER_NAME_CHECKED(APickup, DesiredItemID))
 	{
 		if (ItemDataTable)
 		{
-			if (const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(DesiredItemID, DesiredItemID.ToString()))
+			if (const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(
+				DesiredItemID, DesiredItemID.ToString()))
 			{
 				PickupMesh->SetStaticMesh(ItemData->AssetData.Mesh);
 			}
 		}
 	}
 }
-
-

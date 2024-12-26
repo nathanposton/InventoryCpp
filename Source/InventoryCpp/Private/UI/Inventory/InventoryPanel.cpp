@@ -28,10 +28,23 @@ void UInventoryPanel::NativeOnInitialized()
 
 void UInventoryPanel::SetInfoText() const
 {
+	// WeightInfo->SetText(FText::Format(FText::FromString("{0}/{1}"),
+	//                                   InventoryReference->
+	//                                   GetInventoryTotalWeight(),
+	//                                   InventoryReference->GetWeightCapacity()));
 	WeightInfo->SetText(FText::Format(FText::FromString("{0}/{1}"),
-	                                  InventoryReference->
-	                                  GetInventoryTotalWeight(),
-	                                  InventoryReference->GetWeightCapacity()));
+	                                  FText::AsNumber(
+		                                  InventoryReference->
+		                                  GetInventoryTotalWeight(),
+		                                  &FNumberFormattingOptions().
+		                                   SetMinimumFractionalDigits(1).
+		                                   SetMaximumFractionalDigits(2)),
+	                                  FText::AsNumber(
+		                                  InventoryReference->
+		                                  GetWeightCapacity(),
+		                                  &FNumberFormattingOptions().
+		                                   SetMinimumFractionalDigits(1).
+		                                   SetMaximumFractionalDigits(2))));
 	CapacityInfo->SetText(FText::Format(FText::FromString("{0}/{1}"),
 	                                    InventoryReference->GetInventoryItems().
 	                                    Num(),
@@ -44,14 +57,17 @@ void UInventoryPanel::RefreshInventory()
 	if (InventoryReference && InventorySlotClass)
 	{
 		InventoryPanel->ClearChildren();
-		SetInfoText();
+
 		for (const auto InventoryItem : InventoryReference->GetInventoryItems())
 		{
-			UInventoryItemSlot* ItemSlot = CreateWidget<UInventoryItemSlot>(this,
-			                                                            InventorySlotClass);
+			UInventoryItemSlot* ItemSlot = CreateWidget<UInventoryItemSlot>(
+				this,
+				InventorySlotClass);
 			ItemSlot->SetItemReference(InventoryItem);
 			InventoryPanel->AddChildToWrapBox(ItemSlot);
 		}
+
+		SetInfoText();
 	}
 }
 
