@@ -8,6 +8,7 @@
 #include "Components/WrapBox.h"
 #include "InventoryCpp/InventoryCppCharacter.h"
 #include "UI/Inventory/InventoryItemSlot.h"
+#include "UI/Inventory/ItemDragDropOperation.h"
 
 void UInventoryPanel::NativeOnInitialized()
 {
@@ -75,5 +76,15 @@ bool UInventoryPanel::NativeOnDrop(const FGeometry& InGeometry,
                                    const FDragDropEvent& InDragDropEvent,
                                    UDragDropOperation* InOperation)
 {
+	const UItemDragDropOperation* ItemDragDrop = Cast<UItemDragDropOperation>(InOperation);
+
+	if (ItemDragDrop->SourceItem && InventoryReference)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Detected an item drop on InventoryPanel."));
+
+		// returning true will stop the drop operation at this widget
+		return true;
+	}
+	// returning false will allow the drop operation to continue to the next widget
 	return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
 }

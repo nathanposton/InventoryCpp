@@ -16,7 +16,8 @@ void UInventoryItemSlot::NativeOnInitialized()
 	Super::NativeOnInitialized();
 	if (TooltipClass)
 	{
-		UInventoryTooltip* Tooltip = CreateWidget<UInventoryTooltip>(this, TooltipClass);
+		UInventoryTooltip* Tooltip = CreateWidget<UInventoryTooltip>(
+			this, TooltipClass);
 		Tooltip->InventorySlotBeingHovered = this;
 		SetToolTip(Tooltip);
 	}
@@ -62,7 +63,8 @@ void UInventoryItemSlot::NativeConstruct()
 }
 
 FReply UInventoryItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry,
-	const FPointerEvent& InMouseEvent)
+                                                   const FPointerEvent&
+                                                   InMouseEvent)
 {
 	FReply Reply = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
 
@@ -82,18 +84,27 @@ void UInventoryItemSlot::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
 }
 
 void UInventoryItemSlot::NativeOnDragDetected(const FGeometry& InGeometry,
-	const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation)
+                                              const FPointerEvent& InMouseEvent,
+                                              UDragDropOperation*& OutOperation)
 {
 	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
 
 	if (DragItemVisualClass)
 	{
-		const TObjectPtr<UDragItemVisual> DragVisual = CreateWidget<UDragItemVisual>(this, DragItemVisualClass);
-		DragVisual->ItemIcon->SetBrushFromTexture(ItemReference->AssetData.Icon);
+		const TObjectPtr<UDragItemVisual> DragVisual = CreateWidget<
+			UDragItemVisual>(this, DragItemVisualClass);
+		DragVisual->ItemIcon->
+		            SetBrushFromTexture(ItemReference->AssetData.Icon);
 		DragVisual->ItemBorder->SetBrushColor(ItemBorder->GetBrushColor());
-		DragVisual->ItemQuantity->SetText(FText::AsNumber(ItemReference->Quantity));
 
-		UItemDragDropOperation* DragItemOperation = NewObject<UItemDragDropOperation>();
+		ItemReference->NumericData.bIsStackable
+			? DragVisual->ItemQuantity->
+			              SetText(FText::AsNumber(ItemReference->Quantity))
+			: DragVisual->ItemQuantity->SetVisibility(
+				ESlateVisibility::Collapsed);
+
+		UItemDragDropOperation* DragItemOperation = NewObject<
+			UItemDragDropOperation>();
 		DragItemOperation->SourceItem = ItemReference;
 		DragItemOperation->SourceInventory = ItemReference->OwningInventory;
 
@@ -105,7 +116,8 @@ void UInventoryItemSlot::NativeOnDragDetected(const FGeometry& InGeometry,
 }
 
 bool UInventoryItemSlot::NativeOnDrop(const FGeometry& InGeometry,
-	const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
+                                      const FDragDropEvent& InDragDropEvent,
+                                      UDragDropOperation* InOperation)
 {
 	return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
 }
