@@ -8,6 +8,7 @@
 #include "Logging/LogMacros.h"
 #include "InventoryCppCharacter.generated.h"
 
+class UItemBase;
 class UInventoryComponent;
 class AInventoryHUD;
 
@@ -75,6 +76,8 @@ public:
 	}
 
 	void UpdateInteractionWidget() const;
+
+	void DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop);
 
 protected:
 	// =================================================================================================
