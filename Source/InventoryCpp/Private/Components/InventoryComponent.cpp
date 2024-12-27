@@ -162,28 +162,6 @@ FItemAddResult UInventoryComponent::HandleNonStackableItems(
 int32 UInventoryComponent::HandleStackableItems(UItemBase* ItemIn,
                                                 int32 RequestedAddAmount)
 {
-	// FIXME:
-	// error: when attempting to pick up 15 potions of weight 2.
-	// max stack size: 5
-	// weight limit: 50
-	// inventory contents before pickup: 2 stacks of 5, 1 stack of 1
-	// inventory weight before pickup: 22/50
-	// slot count before pickup: 3/20
-	//
-	// after attempting pickup of 15 potions:
-	// pickup disappears
-	// one stack of 5 potions is gained
-	// 10 weight is added to inventory.
-	// one slot is added to inventory.
-	// this is wrong.
-	//
-	// expected outcome:
-	// pickup remains, with one potion left
-	// the stack of 1 potion is filled to 5
-	// 2 more stacks of 5 are added.
-	// weight ends at 50/50
-	// slots end at 5/20
-
 	// check if requested amount is valid
 	if (RequestedAddAmount <= 0 || FMath::IsNearlyZero(
 		ItemIn->GetItemStackWeight()))
@@ -211,6 +189,7 @@ int32 UInventoryComponent::HandleStackableItems(UItemBase* ItemIn,
 				GetItemSingleWeight());
 
 			AmountToDistribute -= WeightLimitAddAmount;
+
 			ItemIn->SetQuantity(AmountToDistribute);
 
 			// if weight limit reached/exceeded, halt the loop
@@ -244,21 +223,27 @@ int32 UInventoryComponent::HandleStackableItems(UItemBase* ItemIn,
 		ExistingItemStack = FindNextPartialStack(ItemIn);
 	}
 
-	// No more partial stacks found, check if a new stack can be added
-	while (AmountToDistribute > 0 && InventoryContents.Num() < InventorySlotsCapacity)
+	// no more partial stacks found, check if a new stack can be added
+	if (InventoryContents.Num() + 1 <= InventorySlotsCapacity)
 	{
 		const int32 WeightLimitAddAmount = CalculateWeightAddAmount(ItemIn, AmountToDistribute);
 
 		if (WeightLimitAddAmount > 0)
 		{
-			const int32 AmountToAdd = FMath::Min(WeightLimitAddAmount, ItemIn->NumericData.MaxStackSize);
-			AddNewItem(ItemIn->CreateItemCopy(), AmountToAdd);
-			AmountToDistribute -= AmountToAdd;
-			ItemIn->SetQuantity(AmountToDistribute);
-		}
-		else
-		{
-			break;
+			if (WeightLimitAddAmount < AmountToDistribute)
+			{
+				// create a partial stack up to amount that won't exceed weight
+				AmountToDistribute -= WeightLimitAddAmount;
+				ItemIn->SetQuantity(AmountToDistribute);
+
+				// create a copy, because pickup will remain.
+				AddNewItem(ItemIn->CreateItemCopy(), WeightLimitAddAmount);
+				return RequestedAddAmount - AmountToDistribute;
+			}
+
+			// full	stack can be added
+			AddNewItem(ItemIn, AmountToDistribute);
+			return RequestedAddAmount;
 		}
 	}
 
