@@ -41,6 +41,8 @@ void APickup::InitializePickup(const TSubclassOf<UItemBase> BaseClass,
 		ItemReference->AssetData = ItemData->AssetData;
 		ItemReference->Statistics = ItemData->Statistics;
 
+		ItemReference->NumericData.bIsStackable = (ItemData->NumericData.
+			MaxStackSize > 1);
 		InQuantity <= 0
 			? ItemReference->SetQuantity(1)
 			: ItemReference->SetQuantity(InQuantity);
@@ -54,12 +56,14 @@ void APickup::InitializePickup(const TSubclassOf<UItemBase> BaseClass,
 void APickup::InitializeDrop(UItemBase* ItemToDrop, const int32 InQuantity)
 {
 	ItemReference = ItemToDrop;
+	
 	InQuantity <= 0
 		? ItemReference->SetQuantity(1)
 		: ItemReference->SetQuantity(InQuantity);
 	// redundant?
 	ItemReference->NumericData.Weight = ItemToDrop->GetItemSingleWeight();
 	ItemReference->Statistics = ItemToDrop->Statistics;
+	ItemReference->OwningInventory = nullptr;
 	PickupMesh->SetStaticMesh(ItemToDrop->AssetData.Mesh);
 
 	UpdateInteractableData();

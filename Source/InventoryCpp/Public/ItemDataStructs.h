@@ -85,7 +85,7 @@ struct FItemNumericData
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 MaxStackSize;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY()
 	bool bIsStackable;
 };
 
