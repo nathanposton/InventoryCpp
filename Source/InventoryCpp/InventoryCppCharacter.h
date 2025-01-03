@@ -8,6 +8,7 @@
 #include "Logging/LogMacros.h"
 #include "InventoryCppCharacter.generated.h"
 
+class UTimelineComponent;
 class UItemBase;
 class UInventoryComponent;
 class AInventoryHUD;
@@ -46,6 +47,7 @@ public:
 	//=================================================================================================
 	// PROPERTIES & VARIABLES
 	//=================================================================================================
+	bool bAiming;
 
 
 	//=================================================================================================
@@ -121,6 +123,12 @@ protected:
 		meta = (AllowPrivateAccess = "true"))
 	UInputAction* InteractAction;
 
+	/** Aim Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input,
+		meta = (AllowPrivateAccess = "true"))
+	UInputAction* AimAction;
+
+
 	/** Menu Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input,
 		meta = (AllowPrivateAccess = "true"))
@@ -133,17 +141,26 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Character | Inventory")
 	UInventoryComponent* PlayerInventory;
 
+	// interaction properties
 	UPROPERTY()
 	float InteractionCheckFrequency;
-
 	UPROPERTY()
 	float InteractionCheckDistance;
-
 	UPROPERTY()
 	FTimerHandle TimerHandle_Interaction;
-
 	UPROPERTY()
 	FInteractionData InteractionData;
+
+	// timeline properties
+	UPROPERTY(VisibleAnywhere, Category = "Character | Camera")
+	FVector DefaultCameraLocation;
+	UPROPERTY(VisibleAnywhere, Category = "Character | Camera")
+	FVector AimingCameraLocation;
+
+	TObjectPtr<UTimelineComponent> AimingCameraTimeline;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Character | Aim Timeline")
+	UCurveFloat* AimingCameraCurve;
 	// =================================================================================================
 	// FUNCTIONS
 	// =================================================================================================
@@ -163,6 +180,13 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 	void ToggleMenu();
+
+	void Aim();
+	void StopAiming();
+	UFUNCTION()
+	void UpdateCameraTimeline(const float TimelineValue) const;
+	UFUNCTION()
+	void CameraTimelineEnd();
 
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);

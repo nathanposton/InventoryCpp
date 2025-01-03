@@ -11,6 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Components/InventoryComponent.h"
+#include "Components/TimelineComponent.h"
 #include "UI/InventoryHUD.h"
 #include "World/Pickup.h"
 
@@ -48,7 +49,7 @@ AInventoryCppCharacter::AInventoryCppCharacter()
 	CameraBoom = CreateDefaultSubobject<
 		USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 400.0f;
+	CameraBoom->TargetArmLength = 300.0f;
 	// The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true;
 	// Rotate the arm based on the controller
@@ -64,6 +65,12 @@ AInventoryCppCharacter::AInventoryCppCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	AimingCameraTimeline = CreateDefaultSubobject<UTimelineComponent>(
+		TEXT("AimingCameraTimeline"));
+	DefaultCameraLocation = FVector{0.0f, 0.0f, 65.0f};
+	AimingCameraLocation = FVector{175.0f, 50.0f, 55.0f};
+	CameraBoom->SocketOffset = DefaultCameraLocation;
 
 	InteractionCheckFrequency = 0.2f;
 	InteractionCheckDistance = 225.0f;
@@ -115,6 +122,15 @@ void AInventoryCppCharacter::SetupPlayerInputComponent(
 		EnhancedInputComponent->BindAction(InteractAction,
 		                                   ETriggerEvent::Completed, this,
 		                                   &AInventoryCppCharacter::EndInteract);
+
+		// Aiming
+		// Interacting (with items, etc.)
+		EnhancedInputComponent->BindAction(AimAction,
+										   ETriggerEvent::Started, this,
+										   &AInventoryCppCharacter::Aim);
+		EnhancedInputComponent->BindAction(AimAction,
+										   ETriggerEvent::Completed, this,
+										   &AInventoryCppCharacter::StopAiming);
 
 		// Menu
 		EnhancedInputComponent->BindAction(MenuAction, ETriggerEvent::Started,
@@ -196,11 +212,77 @@ void AInventoryCppCharacter::ToggleMenu()
 	}
 }
 
+void AInventoryCppCharacter::Aim()
+{
+	if (!HUD->bIsMenuVisible)
+	{
+		bAiming = true;
+		bUseControllerRotationYaw = true;
+		GetCharacterMovement()->MaxWalkSpeed = 200.0f;
+
+		if (AimingCameraTimeline)
+		{
+			AimingCameraTimeline->PlayFromStart();
+		}
+	}
+}
+
+void AInventoryCppCharacter::StopAiming()
+{
+	if (bAiming)
+	{
+		bAiming = false;
+		bUseControllerRotationYaw = false;
+		GetCharacterMovement()->MaxWalkSpeed = 500.0f;
+
+		if (AimingCameraTimeline)
+		{
+			AimingCameraTimeline->Reverse();
+		}
+	}
+}
+
+void AInventoryCppCharacter::UpdateCameraTimeline(
+	const float TimelineValue) const
+{
+	const FVector CameraLocation = FMath::Lerp(DefaultCameraLocation,
+	                                           AimingCameraLocation, TimelineValue);
+	CameraBoom->SocketOffset = CameraLocation;
+}
+
+void AInventoryCppCharacter::CameraTimelineEnd()
+{
+	if (AimingCameraTimeline)
+	{
+		if (AimingCameraTimeline->GetPlaybackPosition() != 0.0f)
+		{
+			// HUD->DisplayCrosshair();
+		}
+	}
+}
+
 void AInventoryCppCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
 	HUD = Cast<AInventoryHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+
+	FOnTimelineFloat AimLerpAlphaValue;
+	FOnTimelineEvent TimelineFinishedEvent;
+	AimLerpAlphaValue.BindUFunction(this, FName("UpdateCameraTimeline"));
+	TimelineFinishedEvent.BindUFunction(this, FName("CameraTimelineEnd"));
+
+	if (AimingCameraTimeline && AimingCameraCurve)
+	{
+		AimingCameraTimeline->AddInterpFloat(AimingCameraCurve, AimLerpAlphaValue);
+		AimingCameraTimeline->SetTimelineFinishedFunc(TimelineFinishedEvent);
+		// AimingCameraTimeline->SetLooping(false);
+	}
+	else
+	{
+		UE_LOG(LogTemplateCharacter, Error,
+		       TEXT("Aiming Camera Timeline or Curve was not set in the Character class!"));
+	}
 }
 
 void AInventoryCppCharacter::PerformInteractionCheck()
