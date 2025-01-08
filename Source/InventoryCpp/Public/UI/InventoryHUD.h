@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UInteractionWidget> InteractionWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UUserWidget> CrosshairWidgetClass;
+
 	bool bIsMenuVisible;
 	//=================================================================================================
 	// FUNCTIONS
@@ -37,6 +40,9 @@ public:
 	void DisplayMenu();
 	void HideMenu();
 	void ToggleMenu();
+
+	void ShowCrosshair() const;
+	void HideCrosshair() const;
 
 	void ShowInteractionWidget() const;
 	void HideInteractionWidget() const;
@@ -52,6 +58,9 @@ protected:
 
 	UPROPERTY()
 	UInteractionWidget* InteractionWidget;
+
+	UPROPERTY()
+	UUserWidget* CrosshairWidget;
 
 	// =================================================================================================
 	// FUNCTIONS

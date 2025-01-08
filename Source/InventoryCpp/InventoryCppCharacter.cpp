@@ -210,6 +210,11 @@ void AInventoryCppCharacter::ToggleMenu()
 	{
 		HUD->ToggleMenu();
 	}
+
+	if (HUD->bIsMenuVisible)
+	{
+		StopAiming();
+	}
 }
 
 void AInventoryCppCharacter::Aim()
@@ -233,6 +238,7 @@ void AInventoryCppCharacter::StopAiming()
 	{
 		bAiming = false;
 		bUseControllerRotationYaw = false;
+		HUD->HideCrosshair();
 		GetCharacterMovement()->MaxWalkSpeed = 500.0f;
 
 		if (AimingCameraTimeline)
@@ -250,13 +256,13 @@ void AInventoryCppCharacter::UpdateCameraTimeline(
 	CameraBoom->SocketOffset = CameraLocation;
 }
 
-void AInventoryCppCharacter::CameraTimelineEnd()
+void AInventoryCppCharacter::CameraTimelineEnd() const
 {
 	if (AimingCameraTimeline)
 	{
 		if (AimingCameraTimeline->GetPlaybackPosition() != 0.0f)
 		{
-			// HUD->DisplayCrosshair();
+			HUD->ShowCrosshair();
 		}
 	}
 }
@@ -289,7 +295,19 @@ void AInventoryCppCharacter::PerformInteractionCheck()
 {
 	InteractionData.LastInteractionCheckTime = GetWorld()->GetTimeSeconds();
 
-	FVector TraceStart{GetPawnViewLocation()};
+	FVector TraceStart{FVector::ZeroVector};
+
+	if (!bAiming)
+	{
+		InteractionCheckDistance = 225.0f;
+		TraceStart = GetPawnViewLocation();
+	}
+	else
+	{
+		InteractionCheckDistance = 300.0f;
+		TraceStart = FollowCamera->GetComponentLocation();
+	}
+
 	FVector TraceEnd{
 		TraceStart + (GetViewRotation().Vector() * InteractionCheckDistance)
 	};
@@ -299,8 +317,9 @@ void AInventoryCppCharacter::PerformInteractionCheck()
 	                                          GetActorForwardVector());
 	if (LookDirection > 0)
 	{
+		//TODO: remove debug line
 		DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Green, false,
-		              1.0f, 0, 2.0f);
+		              1.0f, 0, 0.5f);
 
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(this);
