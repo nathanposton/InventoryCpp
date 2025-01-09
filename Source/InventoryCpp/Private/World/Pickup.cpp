@@ -26,10 +26,10 @@ void APickup::BeginPlay()
 void APickup::InitializePickup(const TSubclassOf<UItemBase> BaseClass,
                                const int32 InQuantity)
 {
-	if (ItemDataTable && !DesiredItemID.IsNone())
+	if (!ItemRowHandle.IsNull())
 	{
-		const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(
-			DesiredItemID, DesiredItemID.ToString());
+		const FItemData* ItemData = ItemRowHandle.GetRow<FItemData>(
+			ItemRowHandle.RowName.ToString());
 
 		ItemReference = NewObject<UItemBase>(this, BaseClass);
 
@@ -167,15 +167,12 @@ void APickup::PostEditChangeProperty(
 		                                  GetFName()
 		                                  : NAME_None;
 
-	if (ChangedPropertyName == GET_MEMBER_NAME_CHECKED(APickup, DesiredItemID))
+	if (ChangedPropertyName == "RowName")
 	{
-		if (ItemDataTable)
+		if (const FItemData* ItemData = ItemRowHandle.GetRow<FItemData>(
+			ItemRowHandle.RowName.ToString()))
 		{
-			if (const FItemData* ItemData = ItemDataTable->FindRow<FItemData>(
-				DesiredItemID, DesiredItemID.ToString()))
-			{
-				PickupMesh->SetStaticMesh(ItemData->AssetData.Mesh);
-			}
+			PickupMesh->SetStaticMesh(ItemData->AssetData.Mesh);
 		}
 	}
 }

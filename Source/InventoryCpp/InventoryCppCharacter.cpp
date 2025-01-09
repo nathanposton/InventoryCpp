@@ -318,8 +318,8 @@ void AInventoryCppCharacter::PerformInteractionCheck()
 	if (LookDirection > 0)
 	{
 		//TODO: remove debug line
-		DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Green, false,
-		              1.0f, 0, 0.5f);
+		// DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Green, false,
+		              // 1.0f, 0, 0.5f);
 
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(this);
