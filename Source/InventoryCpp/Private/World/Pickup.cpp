@@ -56,7 +56,7 @@ void APickup::InitializePickup(const TSubclassOf<UItemBase> BaseClass,
 void APickup::InitializeDrop(UItemBase* ItemToDrop, const int32 InQuantity)
 {
 	ItemReference = ItemToDrop;
-	
+
 	InQuantity <= 0
 		? ItemReference->SetQuantity(1)
 		: ItemReference->SetQuantity(InQuantity);
@@ -167,11 +167,13 @@ void APickup::PostEditChangeProperty(
 		                                  GetFName()
 		                                  : NAME_None;
 
-	if (ChangedPropertyName == "RowName")
+	if (ChangedPropertyName == GET_MEMBER_NAME_CHECKED(
+		FDataTableRowHandle, RowName))
 	{
-		if (const FItemData* ItemData = ItemRowHandle.GetRow<FItemData>(
-			ItemRowHandle.RowName.ToString()))
+		if (!ItemRowHandle.IsNull())
 		{
+			const FItemData* ItemData = ItemRowHandle.GetRow<FItemData>(
+				ItemRowHandle.RowName.ToString());
 			PickupMesh->SetStaticMesh(ItemData->AssetData.Mesh);
 		}
 	}
