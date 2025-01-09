@@ -157,6 +157,7 @@ void APickup::TakePickup(const AInventoryCppCharacter* Taker)
 	}
 }
 
+#if WITH_EDITOR
 void APickup::PostEditChangeProperty(
 	FPropertyChangedEvent& PropertyChangedEvent)
 {
@@ -178,3 +179,4 @@ void APickup::PostEditChangeProperty(
 		}
 	}
 }
+#endif
